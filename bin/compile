@@ -23,7 +23,7 @@ echo "compile_buildpack_bin: $compile_buildpack_bin"
 echo "compile_buildpack_dir: $compile_buildpack_dir"
 
 # ----------------------httpd download kept along with buildpack--------------------------------------------------------------------------
-compile_httpd_tgz="$compile_buildpack_dir/binaries/httpd-2.2.14.tar.gz"
+compile_httpd_tgz="$compile_buildpack_dir/binaries/httpd-2.2.29.tar.gz"
 compile_tomcat_tgz="$compile_buildpack_dir/binaries/apache-tomcat-7.0.57.tar.gz"
 
 # ------------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ else
   else
     echo -n "-----> Installing (httpd--apache2)....."
     tar xzf $compile_httpd_tgz
-    cd $compile_build_dir/httpd-2.2.14
+    cd $compile_build_dir/httpd-2.2.29
     apache2_build_dir=$compile_build_dir/apache2
 #configure
 ./configure --prefix=$apache2_build_dir \
