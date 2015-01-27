@@ -143,6 +143,7 @@ cd $compile_build_dir
 cp -f $compile_buildpack_dir/conf/httpd.conf  apache2/conf/httpd.conf
 cp -f $compile_buildpack_dir/conf/httpd-vhosts.conf  apache2/conf/extra/httpd-vhosts.conf
 cp -R $compile_buildpack_dir/logs apache2
+
 cp -f $compile_build_dir/public/libct_apache22_agent-4.8.0.46-x64.so apache2/modules
 # -------------------------------libct_apache22 ---------------------------------------
 cd $compile_build_dir/apache2/modules
@@ -151,9 +152,9 @@ cd $compile_build_dir
 # -------------------------------copying build pack tomcat end-----------------------------------------------------------------
 cp $compile_buildpack_bin/boot.sh .
 cp $compile_buildpack_bin/startup.sh .
-
+cp $compile_buildpack_bin/verify.sh .
 # -------------------------------copying webagent conf -----------------------------------------------------------------
-cp $compile_buildpack_dir/conf/webagent.conf .
+#cp $compile_buildpack_dir/conf/webagent.conf .
 mkdir -p $compile_build_dir/conf 
 cp $compile_buildpack_dir/conf/webagent.conf $compile_build_dir/conf
 #logging properties which having without ConsoleHandler
