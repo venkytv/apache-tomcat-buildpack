@@ -143,7 +143,7 @@ cd $compile_build_dir
 cp -f $compile_buildpack_dir/conf/httpd.conf  apache2/conf/httpd.conf
 cp -f $compile_buildpack_dir/conf/httpd-vhosts.conf  apache2/conf/extra/httpd-vhosts.conf
 cp -R $compile_buildpack_dir/logs apache2
-cp -f $compile_buildpack_dir/binaries/libct_apache22_agent-4.8.0.46-x64.so apache2/modules
+cp -f $compile_build_dir/public/libct_apache22_agent-4.8.0.46-x64.so apache2/modules
 # -------------------------------libct_apache22 ---------------------------------------
 cd $compile_build_dir/apache2/modules
 chmod uog+rx libct_apache22_agent-4.8.0.46-x64.so
