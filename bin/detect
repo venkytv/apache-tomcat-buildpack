@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [[ ! ( -f $1/index.html || -f $1/index.htm || -f $1/Default.htm ||  -f $1/*.war) ]]
+then
+  echo "No" && exit 1
+else
+  echo "Static" && exit 0
+fi
