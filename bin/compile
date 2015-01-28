@@ -173,15 +173,6 @@ cp -r apache2 "$compile_cache_dir/apache2"
 rm -rf "$compile_cache_dir/apache-tomcat-7.0.57"
 cp -r apache-tomcat-7.0.57 "$compile_cache_dir/apache-tomcat-7.0.57"
 
-# copying war files into tomcat webapps
-
-#cd $compile_build_dir/public
-#for file in *.war
-#do
- #cp -f $compile_build_dir/public/$file  $compile_build_dir/apache-tomcat-7.0.57/webapps
- #echo " $file has been copied into webapps...."
-#done
-
 # Deploy all war files
 WEBAPPDIR=$compile_build_dir/apache-tomcat-7.0.57/webapps
 cd $compile_build_dir/public
