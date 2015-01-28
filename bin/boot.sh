@@ -20,7 +20,8 @@ ldd $APP_ROOT/apache2/bin/httpd
 (tail -f -n 0 $APP_ROOT/apache2/logs/*.log &)
 $APP_ROOT/apache2/bin/httpd -k start -f $APP_ROOT/apache2/conf/httpd.conf
 
-
+echo "STARTING TOMCAT ......"
+JAVA_HOME=$HOME/jdk1.8.0_25 JAVA_OPTS="-Djava.io.tmpdir=$TMPDIR -Dhttp.port=8080" $HOME/apache-tomcat-7.0.57/bin/catalina.sh run >> /dev/null 2>&1 &
 
 while pgrep -f /app/apache2/bin/httpd >/dev/null; do
 echo "Apache running..."
