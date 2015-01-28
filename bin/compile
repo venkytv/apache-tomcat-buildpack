@@ -70,7 +70,8 @@ else
 
   else
     echo -n "-----> Installing (httpd--apache2)....."
-    tar xzf $compile_httpd_tgz
+    curl --max-time 180 --location "https://s3.amazonaws.com/covisintrnd.com-software/httpd-2.2.29.tar.gz" | tar xz
+    #tar xzf $compile_httpd_tgz
     cd $compile_build_dir/httpd-2.2.29
     apache2_build_dir=$compile_build_dir/apache2
 #configure
@@ -124,7 +125,8 @@ else
   else
     echo -n "-----> Extracting (apache-tomcat-7.0.57)....."
     cd $compile_build_dir
-    tar xzf $compile_tomcat_tgz
+    curl --max-time 180 --location "https://s3.amazonaws.com/covisintrnd.com-software/apache-tomcat-7.0.57.tar.gz" | tar xz
+    #tar xzf $compile_tomcat_tgz
     chmod -R uog+rx $compile_build_dir/apache-tomcat-7.0.57
     cd "$compile_build_dir"
     echo "Done!"
