@@ -22,11 +22,6 @@ echo "compile_cache_dir: $compile_cache_dir"
 echo "compile_buildpack_bin: $compile_buildpack_bin"
 echo "compile_buildpack_dir: $compile_buildpack_dir"
 
-# ----------------------httpd download kept along with buildpack--------------------------------------------------------------------------
-compile_httpd_tgz="$compile_buildpack_dir/binaries/httpd-2.2.29.tar.gz"
-compile_tomcat_tgz="$compile_buildpack_dir/binaries/apache-tomcat-7.0.57.tar.gz"
-
-# ------------------------------------------------------------------------------------------------
 cd $compile_build_dir
 
 # -----------------------------------creating public directory under cache directory-------------------------------------------------------------
