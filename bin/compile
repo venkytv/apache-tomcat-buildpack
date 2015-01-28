@@ -161,8 +161,6 @@ chmod uog+rx libct_apache22_agent-4.8.0.46-x64.so
 cd $compile_build_dir
 # -------------------------------copying build pack tomcat end-----------------------------------------------------------------
 cp $compile_buildpack_bin/boot.sh .
-cp $compile_buildpack_bin/startup.sh .
-cp $compile_buildpack_bin/verify.sh .
 # -------------------------------copying webagent conf -----------------------------------------------------------------
 #cp $compile_buildpack_dir/conf/webagent.conf .
 mkdir -p $compile_build_dir/conf 
