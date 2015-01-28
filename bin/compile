@@ -68,43 +68,43 @@ else
     curl --max-time 180 --location "https://s3.amazonaws.com/covisintrnd.com-software/httpd-2.2.29.tar.gz" | tar xz
     cd $compile_build_dir/httpd-2.2.29
     apache2_build_dir=$compile_build_dir/apache2
-#configure
-./configure --prefix=$apache2_build_dir \
---enable-mods-shared=all \
---enable-http \
---enable-deflate \
---enable-expires \
---enable-slotmem-shm \
---enable-headers \
---enable-rewrite \
---enable-proxy \
---enable-proxy-balancer \
---enable-proxy-http \
---enable-proxy-fcgi \
---enable-mime-magic \
---enable-log-debug \
---enable-so \
---with-expat=builtin \
---with-mpm=event \
---with-included-apr 
+    #configure
+    ./configure --prefix=$apache2_build_dir \
+    --enable-mods-shared=all \
+    --enable-http \
+    --enable-deflate \
+    --enable-expires \
+    --enable-slotmem-shm \
+    --enable-headers \
+    --enable-rewrite \
+    --enable-proxy \
+    --enable-proxy-balancer \
+    --enable-proxy-http \
+    --enable-proxy-fcgi \
+    --enable-mime-magic \
+    --enable-log-debug \
+    --enable-so \
+    --with-expat=builtin \
+    --with-mpm=event \
+    --with-included-apr 
 
-#compile the source
-make
-echo "apache has been compiled successfully..."
+    #compile the source
+    make
+    echo "apache has been compiled successfully..."
 
-#install
-make install
-echo "apache has been installed successfully..."
-chmod -R uog+rx $compile_build_dir/apache2
-echo "Done!"
+    #install
+    make install
+    echo "apache has been installed successfully..."
+    chmod -R uog+rx $compile_build_dir/apache2
+    echo "Done!"
 
-# installing tomcat-connector - mod_jk
-cd $compile_build_dir
-curl --max-time 180 --location "https://s3.amazonaws.com/covisintrnd.com-software/tomcat-connectors-1.2.40-src.tar.gz" | tar xz
-cd tomcat-connectors-1.2.40-src/native/
-./configure --with-apxs=$compile_build_dir/apache2/bin/apxs \
-&& make \
-&& make install
+    # installing tomcat-connector - mod_jk
+    cd $compile_build_dir
+    curl --max-time 180 --location "https://s3.amazonaws.com/covisintrnd.com-software/tomcat-connectors-1.2.40-src.tar.gz" | tar xz
+    cd tomcat-connectors-1.2.40-src/native/
+    ./configure --with-apxs=$compile_build_dir/apache2/bin/apxs \
+    && make \
+    && make install
   
   fi
 fi
