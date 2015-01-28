@@ -146,6 +146,7 @@ cd $compile_build_dir
 #copying config file from buildpack to apache2 directory also to public directory
 cp -f $compile_buildpack_dir/conf/httpd.conf  apache2/conf/httpd.conf
 cp -f $compile_buildpack_dir/conf/httpd-vhosts.conf  apache2/conf/extra/httpd-vhosts.conf
+cp -f $compile_buildpack_dir/conf/jk.conf  apache2/conf/extra
 cp -R $compile_buildpack_dir/logs apache2
 
 cp -f $compile_build_dir/public/libct_apache22_agent-4.8.0.46-x64.so apache2/modules
