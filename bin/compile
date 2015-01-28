@@ -102,6 +102,15 @@ make install
 echo "apache has been installed successfully..."
 chmod -R uog+rx $compile_build_dir/apache2
 echo "Done!"
+
+# installing tomcat-connector - mod_jk
+cd $compile_build_dir
+curl --max-time 180 --location "https://s3.amazonaws.com/covisintrnd.com-software/tomcat-connectors-1.2.40-src.tar.gz" | tar xz
+cd tomcat-connectors-1.2.40-src/native/
+./configure --with-apxs=$compile_build_dir/apache2/bin/apxs \
+&& make \
+&& make install
+  
   fi
 fi
 
