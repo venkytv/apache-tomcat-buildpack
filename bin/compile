@@ -190,5 +190,9 @@ for ZIP in *.zip; do
 [ -r "$ZIP" ] || continue
 echo "Extracting $ZIP"
 unzip "$ZIP" 
-mv *.war "$WEBAPPDIR"
+    for WAR in *.war; do
+        [ -r "$WAR" ] || continue
+        echo "Deploying $WAR"  
+        mv "$WAR" "$WEBAPPDIR"
+    done
 done
