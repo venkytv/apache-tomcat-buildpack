@@ -185,3 +185,9 @@ for WAR in *.war; do
 echo "Deploying $WAR"
 cp "$WAR" "$WEBAPPDIR"
 done
+
+for ZIP in *.zip; do
+[ -r "$ZIP" ] || continue
+echo "Extracting $ZIP"
+unzip "$ZIP" -d  "$WEBAPPDIR"
+done
