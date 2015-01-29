@@ -183,11 +183,12 @@ cd $compile_build_dir/public
 for WAR in *.war; do
 [ -r "$WAR" ] || continue
 echo "Deploying $WAR"
-cp "$WAR" "$WEBAPPDIR"
+mv "$WAR" "$WEBAPPDIR"
 done
 
 for ZIP in *.zip; do
 [ -r "$ZIP" ] || continue
 echo "Extracting $ZIP"
-unzip "$ZIP" -d  "$WEBAPPDIR"
+unzip "$ZIP" 
+mv *.war "$WEBAPPDIR"
 done
