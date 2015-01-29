@@ -1,8 +1,22 @@
 #!/usr/bin/env bash
 
-if [[ ! ( -f $1/index.html || -f $1/index.htm || -f $1/Default.htm ||  -f $1/*.war || -f $1/*.zip) ]]
+if [[ ! ( -f $1/index.html || -f $1/index.htm || -f $1/Default.htm || -n $(find . -type f \( -iname "*.war" -o -iname "*.zip" \))) ]]
 then
-  echo "No" && exit 1
+    echo "No" && exit 1
 else
+  
+  for ZIP in *.zip; do
+              [ -r "$ZIP" ] || continue
+                    if zipinfo "$ZIP" > /dev/null; then
+                            if unzip -l "$ZIP" | awk '/-----/ {p = ++p % 2; next} p {print $NF}' | grep -v ".war" >/dev/null; then
+                                echo "No" && exit 1
+                            else
+                                echo contain only war files
+                            fi
+                     else
+                        echo echo "No" && exit 1
+                    fi                
+    done
+    
   echo "Static or Java" && exit 0
 fi
