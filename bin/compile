@@ -4,11 +4,15 @@
 shopt -s dotglob
 set -e
 
+BUILDPACKDIR=$( cd $( dirname $0 ) && cd .. && pwd )
+cp ${BUILDPACKDIR}/bin/boot.sh .
+
 # Check if DEBUG env variable made it this far
 echo "DEBUG: $DEBUG"
 if [[ "$DEBUG" == 'true' ]]; then
 	echo "Deploying websocketd"
-	cp $compile_buildpack_bin/bash.sh .
+	cp ${BUILDPACKDIR}/bin/bash.sh .
+	cp ${BUILDPACKDIR}/websocketd .
 fi
 
 # DEBUGGING... ABORT HERE
