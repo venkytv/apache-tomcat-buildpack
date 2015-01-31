@@ -2,7 +2,7 @@
 
 echo "DEBUG: $DEBUG"
 echo "Starting websocketd..."
-/app/websocketd --port=$PORT --devconsole --dir=/app/bin
+/app/websocketd-cloudfoundry/websocketd --port=$PORT --dir=/app/websocketd-cloudfoundry --devconsole
 sleep 10
 exit 1
 
