@@ -5,5 +5,5 @@
 cat <<EOT
 ---
 default_process_types:
-  web: pwd; ls; while :; do echo "Looping..."; sleep 10; done
+  web: sh bin/boot.sh
 EOT
