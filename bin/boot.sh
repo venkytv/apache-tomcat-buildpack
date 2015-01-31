@@ -1,11 +1,5 @@
 #!/bin/bash
 
-echo "DEBUG: $DEBUG"
-echo "Starting websocketd..."
-/app/websocketd-cloudfoundry/websocketd --port=$PORT --dir=/app/websocketd-cloudfoundry --devconsole
-sleep 10
-exit 1
-
 # ------------------------------------------------------------------------------------------------
 
 export APP_ROOT=$HOME
@@ -31,7 +25,16 @@ $APP_ROOT/apache2/bin/httpd -k start -f $APP_ROOT/apache2/conf/httpd.conf
 echo "STARTING TOMCAT ......"
 JAVA_HOME=$HOME/jdk1.8.0_25 JAVA_OPTS="-Djava.io.tmpdir=$TMPDIR -Dhttp.port=8080" $HOME/apache-tomcat-7.0.57/bin/catalina.sh run >> /dev/null 2>&1 &
 
-while pgrep -f /app/apache2/bin/httpd >/dev/null; do
-echo "Apache running..."
-sleep 60
-done
+echo "DEBUG: $DEBUG"
+if [[ "$DEBUG" == true ]]; then
+	echo "Starting websocketd..."
+	/app/websocketd-cloudfoundry/websocketd --port=$PORT --dir=/app/websocketd-cloudfoundry --devconsole
+else
+	while pgrep -f /app/apache2/bin/httpd >/dev/null; do
+		echo "Apache running..."
+		sleep 60
+	done
+fi
+
+sleep 10
+exit 1
