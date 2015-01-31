@@ -3,6 +3,7 @@
 echo "Starting websocketd..."
 ls -l /app/websocketd/bash.sh
 ls -l /app/websocketd/bin
+sleep 10
 /app/websocketd --port=$PORT --devconsole /app/websocketd/bash.sh
 exit 1
 
