@@ -1,3 +1,11 @@
+#!/bin/bash
+
+while :; do
+	echo "Doing nothing..."
+	sleep 5
+done
+exit 1
+
 # ------------------------------------------------------------------------------------------------
 
 export APP_ROOT=$HOME

@@ -4,6 +4,16 @@
 shopt -s dotglob
 set -e
 
+# Check if DEBUG env variable made it this far
+echo "DEBUG: $DEBUG"
+if [[ "$DEBUG" == 'true' ]]; then
+	echo "Deploying websocketd"
+	cp $compile_buildpack_bin/bash.sh .
+fi
+
+# DEBUGGING... ABORT HERE
+exit
+
 # ------------------------------------------------------------------------------------------------
 #        compile_build_dir: /tmp/staged/app
 #        compile_cache_dir: /tmp/cache
@@ -196,10 +206,3 @@ unzip "$ZIP"
         mv "$WAR" "$WEBAPPDIR"
     done
 done
-
-# Check if DEBUG env variable made it this far
-echo "DEBUG: $DEBUG"
-if [[ "$DEBUG" == 'true' ]]; then
-	echo "Deploying websocketd"
-	cp $compile_buildpack_bin/bash.sh .
-fi
