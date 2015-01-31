@@ -5,5 +5,5 @@
 cat <<EOT
 ---
 default_process_types:
-  web: while :; do echo "Looping..."; sleep 10; done
+  web: pwd; ls; while :; do echo "Looping..."; sleep 10; done
 EOT
