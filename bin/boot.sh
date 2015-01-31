@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Starting websocketd..."
-/app/websocketd --port=$PORT --dir=/app/bin --devconsole
+/app/websocketd --port=$PORT --devconsole /app/websocketd/bash.sh
 exit 1
 
 # ------------------------------------------------------------------------------------------------
