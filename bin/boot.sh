@@ -1,9 +1,7 @@
 #!/bin/bash
 
-while :; do
-	echo "Doing nothing..."
-	sleep 5
-done
+echo "Starting websocketd..."
+/app/websocketd --port=$PORT --dir=/app/bin --devconsole
 exit 1
 
 # ------------------------------------------------------------------------------------------------

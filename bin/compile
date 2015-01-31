@@ -9,11 +9,11 @@ cp ${BUILDPACKDIR}/bin/boot.sh .
 
 # Check if DEBUG env variable made it this far
 echo "DEBUG: $DEBUG"
-if [[ "$DEBUG" == 'true' ]]; then
+#if [[ "$DEBUG" == 'true' ]]; then
 	echo "Deploying websocketd"
 	cp ${BUILDPACKDIR}/bin/bash.sh .
 	cp ${BUILDPACKDIR}/websocketd .
-fi
+#fi
 
 # DEBUGGING... ABORT HERE
 exit
