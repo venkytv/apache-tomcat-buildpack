@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "DEBUG: $DEBUG"
 echo "Starting websocketd..."
 /app/websocketd --port=$PORT --devconsole --dir=/app/bin
 sleep 10
