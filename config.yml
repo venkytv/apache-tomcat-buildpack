@@ -15,4 +15,4 @@ bundles:
 options:
   enable_websocket: no
   enable_mod_jk: no
-  cache_binaries: yes
+  cache_binaries: no

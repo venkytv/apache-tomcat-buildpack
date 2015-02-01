@@ -86,7 +86,8 @@ config['bundles'].each do |bundlename, bundle|
 end
 
 Dir.chdir BUILDDIR
-[ File.join('bin', 'boot.rb'), 'config.yml' ].each do |file|
+#[ File.join('bin', 'boot.rb'), 'config.yml' ].each do |file|
+[ File.join('bin', 'boot.rb') ].each do |file|
     infile = File.join(BUILDDIR, file)
     puts "Copying in file #{infile}"
     FileUtils.copy(infile, '.')
