@@ -27,6 +27,7 @@ end
 #Dir.chdir ORIGDIR
 
 # Load checksums
+puts "Loading checksums"
 checksums = {}
 File.open(CHECKSUMFILE) do |f|
     f.readlines.each do |line|
@@ -36,6 +37,7 @@ File.open(CHECKSUMFILE) do |f|
 end
 
 # Download bundles
+puts "Downloading bundles"
 config['bundles'].each do |bundlename, bundle|
     filename = bundle['filename']
     location = bundle['location']
