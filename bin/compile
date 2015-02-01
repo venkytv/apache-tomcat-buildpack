@@ -12,22 +12,11 @@ TMPDIR = ENV['TMPDIR'] || '/tmp'
 ORIGDIR = Dir.getwd
 CHECKSUMFILE = File.join(BUILDDIR, 'bundles.md5sum')
 
-system("ls -l /app #{BUILDDIR}")
-system("find #{BUILDDIR}")
-
 config = {}
 configfile = File.join(BUILDDIR, 'config.yml')
 if (File.exists?(configfile))
     config = YAML.load(File.read(configfile))
 end
-
-# Clear out the build directory
-#Dir.chdir BUILDDIR
-#Dir['*'].each do |dir|
-#    puts "Removing #{BUILDDIR}/#{dir}"
-#    FileUtils.rm_r dir
-#end
-#Dir.chdir ORIGDIR
 
 # Load checksums
 puts "Loading checksums"
@@ -86,7 +75,6 @@ config['bundles'].each do |bundlename, bundle|
 end
 
 Dir.chdir BUILDDIR
-#[ File.join('bin', 'boot.rb'), 'config.yml' ].each do |file|
 [ File.join('bin', 'boot.rb') ].each do |file|
     infile = File.join(BUILDDIR, file)
     puts "Copying in file #{infile}"
