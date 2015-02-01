@@ -10,7 +10,7 @@ BUILDDIR = ARGV.shift
 CACHEDIR = ARGV.shift
 TMPDIR = ENV['TMPDIR'] || '/tmp'
 ORIGDIR = Dir.getwd
-CHECKSUMFILE = 'bundles.md5sum'
+CHECKSUMFILE = File.join(ENV['HOME'], 'bundles.md5sum')
 
 config = {}
 configfile = File.join(ENV['HOME'], 'config.yml')
