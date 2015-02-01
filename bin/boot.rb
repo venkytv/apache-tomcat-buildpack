@@ -34,7 +34,7 @@ end
 WEBAPPDIR = '/app/tomcat/webapps'
 
 # Install the war files
-Dir['*.war'].each do |war|
+Dir[File.join(ORIGDIR, '*.war')].each do |war|
     puts "Deploying #{war}"
     FileUtils.cp(war, WEBAPPDIR)
 end
