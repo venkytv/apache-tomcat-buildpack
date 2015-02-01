@@ -1,4 +1,8 @@
 ---
-apache: yes
-mod_jk: no
-websocketd: no
+bundles:
+- apache
+- jre
+- tomcat
+options:
+  enable_websocket: no
+  enable_mod_jk: no

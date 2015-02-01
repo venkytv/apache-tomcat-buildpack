@@ -13,8 +13,8 @@ if (File.exists?(configfile))
     config = YAML.load(File.read(configfile))
 end
 
-use_apache = (!config[:apache] || config[:apache] != 'no')
-tomcat_port = (use_apache ? 8080 : ENV['VCAP_APP_PORT'])
+# If Apache is not present, have Tomcat listen on the default poty
+tomcat_port = (config.member?('apache') ?  8080 : ENV['VCAP_APP_PORT'])
 
 templates = %w(
     apache/conf/httpd.conf

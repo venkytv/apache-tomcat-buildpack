@@ -22,18 +22,25 @@ Dir['*'].each do |dir|
 end
 
 # Unbundle packages into build directory
-bundles = File.join(ENV['HOME'], 'vendor', 'bundles', '*')
-Dir[bundles].each do |bundle|
-    bundlename = File.basename(bundle)
-	if (not config[bundle] or config[bundle] != 'no')
+bundles = config['bundles'].collect {|d| [ d,  1 ] }
+bundles = Hash[*bundles.flatten]
+
+all_bundles = File.join(ENV['HOME'], 'vendor', 'bundles', '*')
+Dir[all_bundles].each do |bundle|
+    bundlename = File.basename(bundle, '.tar.bz2')
+	if (bundles[bundlename])
         puts "Unbundling #{bundlename}"
         system('tar', 'xf', bundle) \
             or abort "Failed to unbundle #{bundle}"
+    else
+        puts "Skipping #{bundle}"
     end
 end
 
 [ File.join('bin', 'boot.rb'), 'config.yml' ].each do |file|
-    FileUtils.copy(File.join(ENV['HOME'], file), '.')
+    infile = File.join(ENV['HOME'], file)
+    puts "Copying in file #{infile}"
+    FileUtils.copy(infile, '.')
 end
 
 # vim: set tabstop=4 shiftwidth=4 expandtab :
