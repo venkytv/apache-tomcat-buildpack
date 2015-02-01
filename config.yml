@@ -3,15 +3,15 @@ bundles:
   apache:
     filename: apache.tar.bz2
     #location: vendor/bundles/apache.tar.bz2
-    location: 'https://www.dropbox.com/s/5lw4awpttcm2uf8/apache.tar.bz2?dl=1'
+    location: 'https://www.dropbox.com/s/1onuy88shlw30mt/apache.tar.bz2?dl=1'
   jre:
     filename: jre.tar.bz2
     #location: vendor/bundles/jre.tar.bz2
-    location: 'https://www.dropbox.com/s/8l56o4k3kc74ru6/jre.tar.bz2?dl=1'
+    location: 'https://www.dropbox.com/s/nhwcuuu1w9zmts1/jre.tar.bz2?dl=1'
   tomcat:
     filename: tomcat.tar.bz2
     #location: vendor/bundles/tomcat.tar.bz2
-    location: 'https://www.dropbox.com/s/yi5pie5hqwxsg01/tomcat.tar.bz2?dl=1'
+    location: 'https://www.dropbox.com/s/06m9ui1xafqj9pu/tomcat.tar.bz2?dl=1'
   websocketd:
     filename: websocketd.tar.bz2
     #location: vendor/bundles/websocketd.tar.bz2
