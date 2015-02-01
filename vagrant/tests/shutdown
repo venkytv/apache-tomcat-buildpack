@@ -1,5 +1,5 @@
 #!/bin/bash
-if pgrep /app/apache/bin/httpd >/dev/null 2>&1; then
+if pgrep -f /app/apache/bin/httpd >/dev/null 2>&1; then
     echo "Stopping apache"
     /app/apache/bin/httpd -k stop
 fi
