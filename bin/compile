@@ -10,10 +10,13 @@ BUILDDIR = ARGV.shift
 CACHEDIR = ARGV.shift
 TMPDIR = ENV['TMPDIR'] || '/tmp'
 ORIGDIR = Dir.getwd
-CHECKSUMFILE = File.join(ENV['HOME'], 'bundles.md5sum')
+CHECKSUMFILE = File.join(BUILDDIR, 'bundles.md5sum')
+
+system("ls -l /app #{BUILDDIR}")
+system("find #{BUILDDIR}")
 
 config = {}
-configfile = File.join(ENV['HOME'], 'config.yml')
+configfile = File.join(BUILDDIR, 'config.yml')
 if (File.exists?(configfile))
     config = YAML.load(File.read(configfile))
 end
@@ -84,7 +87,7 @@ end
 
 Dir.chdir BUILDDIR
 [ File.join('bin', 'boot.rb'), 'config.yml' ].each do |file|
-    infile = File.join(ENV['HOME'], file)
+    infile = File.join(BUILDDIR, file)
     puts "Copying in file #{infile}"
     FileUtils.copy(infile, '.')
 end
