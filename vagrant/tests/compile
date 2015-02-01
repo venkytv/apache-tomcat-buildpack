@@ -1,5 +1,5 @@
 #!/bin/bash
 $( dirname $0 )/shutdown
 cd /vagrant
-mkdir -p /tmp/cache
-HOME="$PWD" ruby bin/compile "$PWD" /tmp/cache
+mkdir -p /tmp/staging /tmp/cache
+HOME="$PWD" ruby bin/compile /tmp/staging /tmp/cache

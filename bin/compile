@@ -8,15 +8,33 @@ require 'yaml'
 
 BUILDDIR = ARGV.shift
 CACHEDIR = ARGV.shift
+BUILDPACKDIR = File.dirname(File.dirname(File.expand_path $0))
 TMPDIR = ENV['TMPDIR'] || '/tmp'
 ORIGDIR = Dir.getwd
-CHECKSUMFILE = File.join(BUILDDIR, 'bundles.md5sum')
+CHECKSUMFILE = File.join(BUILDPACKDIR, 'bundles.md5sum')
 
-config = {}
-configfile = File.join(BUILDDIR, 'config.yml')
-if (File.exists?(configfile))
-    config = YAML.load(File.read(configfile))
+puts "==========
+Build dir: #{BUILDDIR}
+Cache dir: #{CACHEDIR}
+Buildpack dir: #{BUILDPACKDIR}
+Temp dir: #{TMPDIR}
+=========="
+
+# Look for config override in cf pushed dir
+# and fall back to default in buildpack if not found
+configfilename = 'config.yml'
+configfile = nil
+[ BUILDDIR, BUILDPACKDIR ].each do |dir|
+    c = File.join(dir, configfilename)
+    if (File.exists?(c))
+        configfile = c
+        break
+    end
 end
+abort "Config file not found: #{configfilename}" unless configfile
+
+puts "Loading config file: #{configfile}"
+config = YAML.load(File.read(configfile))
 
 # Load checksums
 puts "Loading checksums"
@@ -74,11 +92,13 @@ config['bundles'].each do |bundlename, bundle|
     Dir.chdir ORIGDIR
 end
 
-Dir.chdir BUILDDIR
-[ File.join('bin', 'boot.rb') ].each do |file|
-    infile = File.join(BUILDDIR, file)
-    puts "Copying in file #{infile}"
-    FileUtils.copy(infile, '.')
+Dir.chdir(BUILDDIR)
+[ File.join(BUILDPACKDIR, 'bin', 'boot.rb'), configfile ].each do |infile|
+    outfile = File.basename(infile)
+    unless (File.identical?(infile, outfile))
+        puts "Copying in file #{infile}"
+        FileUtils.copy(infile, outfile)
+    end
 end
 
 # vim: set tabstop=4 shiftwidth=4 expandtab :
