@@ -19,12 +19,12 @@ if (File.exists?(configfile))
 end
 
 # Clear out the build directory
-Dir.chdir BUILDDIR
-Dir['*'].each do |dir|
-    puts "Removing #{BUILDDIR}/#{dir}"
-    FileUtils.rm_r dir
-end
-Dir.chdir ORIGDIR
+#Dir.chdir BUILDDIR
+#Dir['*'].each do |dir|
+#    puts "Removing #{BUILDDIR}/#{dir}"
+#    FileUtils.rm_r dir
+#end
+#Dir.chdir ORIGDIR
 
 # Load checksums
 checksums = {}
