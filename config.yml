@@ -1,8 +1,18 @@
 ---
 bundles:
-- apache
-- jre
-- tomcat
+  apache:
+    filename: apache.tar.bz2
+    #location: vendor/bundles/apache.tar.bz2
+    location: 'https://www.dropbox.com/s/1onuy88shlw30mt/apache.tar.bz2?dl=1'
+  jre:
+    filename: jre.tar.bz2
+    #location: vendor/bundles/jre.tar.bz2
+    location: 'https://www.dropbox.com/s/nhwcuuu1w9zmts1/jre.tar.bz2?dl=1'
+  tomcat:
+    filename: tomcat.tar.bz2
+    #location: vendor/bundles/tomcat.tar.bz2
+    location: 'https://www.dropbox.com/s/06m9ui1xafqj9pu/tomcat.tar.bz2?dl=1'
 options:
   enable_websocket: no
   enable_mod_jk: no
+  cache_binaries: yes

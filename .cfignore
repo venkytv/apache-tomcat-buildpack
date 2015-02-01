@@ -1,0 +1,4 @@
+.vagrant
+vendor/bundles/apache.tar.bz2
+vendor/bundles/jre.tar.bz2
+vendor/bundles/tomcat.tar.bz2

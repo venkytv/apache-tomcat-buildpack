@@ -1,11 +1,16 @@
 #!/usr/bin/env ruby
 # bin/compile <build-dir> <cache-dir>
 
+require 'digest/md5'
 require 'fileutils'
+require 'open-uri'
 require 'yaml'
 
 BUILDDIR = ARGV.shift
 CACHEDIR = ARGV.shift
+TMPDIR = ENV['TMPDIR'] || '/tmp'
+ORIGDIR = Dir.getwd
+CHECKSUMFILE = 'bundles.md5sum'
 
 config = {}
 configfile = File.join(ENV['HOME'], 'config.yml')
@@ -13,30 +18,69 @@ if (File.exists?(configfile))
     config = YAML.load(File.read(configfile))
 end
 
-Dir.chdir(BUILDDIR)
-
 # Clear out the build directory
+Dir.chdir BUILDDIR
 Dir['*'].each do |dir|
     puts "Removing #{BUILDDIR}/#{dir}"
     FileUtils.rm_r dir
 end
+Dir.chdir ORIGDIR
 
-# Unbundle packages into build directory
-bundles = config['bundles'].collect {|d| [ d,  1 ] }
-bundles = Hash[*bundles.flatten]
-
-all_bundles = File.join(ENV['HOME'], 'vendor', 'bundles', '*')
-Dir[all_bundles].each do |bundle|
-    bundlename = File.basename(bundle, '.tar.bz2')
-	if (bundles[bundlename])
-        puts "Unbundling #{bundlename}"
-        system('tar', 'xf', bundle) \
-            or abort "Failed to unbundle #{bundle}"
-    else
-        puts "Skipping #{bundle}"
+# Load checksums
+checksums = {}
+File.open(CHECKSUMFILE) do |f|
+    f.readlines.each do |line|
+        (sum, file) = line.split(/\s+/)
+        checksums[file] = sum
     end
 end
 
+# Download bundles
+config['bundles'].each do |bundlename, bundle|
+    filename = bundle['filename']
+    location = bundle['location']
+    checksum = checksums[filename]
+
+    # Try and load file from cache
+    cachedir = File.join(CACHEDIR, checksum)
+    cachefile = File.join(cachedir, filename)
+    location = cachefile if File.exists?(cachefile)
+
+    puts "Getting bundle #{filename} from #{location}"
+
+    tmpfile = File.join(TMPDIR, bundle['filename'])
+    open(tmpfile, 'w') do |outfile|
+        open(location) do |infile|
+            outfile.write(infile.read)
+        end
+    end
+
+    # Verify MD5 sum
+    if (checksum)
+        gotsum = Digest::MD5.hexdigest(File.read(tmpfile))
+        abort "MD5 sum mismatch: #{filename}" unless gotsum == checksum
+        puts "MD5 check: OK"
+    else
+        puts "Skipping checksum verification for #{filename}"
+    end
+
+    # Cache the downloaded bundle
+    if (config['options']['cache_binaries'] and not File.exists?(cachefile))
+        puts "Caching file: #{filename}"
+        Dir.mkdir cachedir unless File.directory? cachedir
+        FileUtils.copy(tmpfile, cachefile)
+    end
+
+    # Unbundle into build directory
+    puts "Unbundling #{filename}"
+    Dir.chdir BUILDDIR
+    system('tar', 'xf', tmpfile) \
+        or abort "Failed to unbundle #{filename}"
+    FileUtils.rm tmpfile
+    Dir.chdir ORIGDIR
+end
+
+Dir.chdir BUILDDIR
 [ File.join('bin', 'boot.rb'), 'config.yml' ].each do |file|
     infile = File.join(ENV['HOME'], file)
     puts "Copying in file #{infile}"
