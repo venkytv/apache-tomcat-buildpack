@@ -1,0 +1,5 @@
+#!/bin/bash
+$( dirname $0 )/shutdown
+cd /vagrant
+mkdir -p /tmp/cache
+HOME="$PWD" ruby bin/compile /app /tmp/cache

@@ -1,0 +1,12 @@
+#!/bin/bash
+if pgrep /app/apache/bin/httpd >/dev/null 2>&1; then
+    echo "Stopping apache"
+    /app/apache/bin/httpd -k stop
+fi
+
+if pgrep -f 'org.apache.catalina.startup.Bootstrap start' >/dev/null 2>&1; then
+    echo "Stopping tomcat"
+    JRE_HOME=/app/jre /app/tomcat/bin/shutdown.sh
+fi
+
+pkill tail

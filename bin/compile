@@ -1,201 +1,38 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
 # bin/compile <build-dir> <cache-dir>
 
-shopt -s dotglob
-set -e
+require 'fileutils'
+require 'yaml'
 
-#BUILDPACKDIR=$( cd $( dirname $0 ) && cd .. && pwd )
-#cp ${BUILDPACKDIR}/bin/boot.sh .
+BUILDDIR = ARGV.shift
+CACHEDIR = ARGV.shift
 
-# ------------------------------------------------------------------------------------------------
-#        compile_build_dir: /tmp/staged/app
-#        compile_cache_dir: /tmp/cache
-#        compile_buildpack_bin: /tmp/buildpacks/{project-name}/bin
-#        compile_buildpack_dir: /tmp/buildpacks/{project-name}
-#        pwd: /tmp/staged
-#------------------------------------------------------------------------------------------------------
-compile_build_dir=$1
-compile_cache_dir=$2
-compile_buildpack_dir=$(cd $(dirname $0) && cd .. && pwd)
-compile_buildpack_bin=$compile_buildpack_dir/bin
+config = {}
+configfile = File.join(ENV['HOME'], 'config.yml')
+if (File.exists?(configfile))
+    config = YAML.load(File.read(configfile))
+end
 
-echo "pwd: $(pwd)"
-echo "compile_build_dir: $compile_build_dir"
-echo "compile_cache_dir: $compile_cache_dir"
-echo "compile_buildpack_bin: $compile_buildpack_bin"
-echo "compile_buildpack_dir: $compile_buildpack_dir"
+Dir.chdir(BUILDDIR)
 
-cd $compile_build_dir
+# Clear out the build directory
+Dir['*'].each do |dir|
+    puts "Removing directory: #{BUILDDIR}/#{dir}"
+    FileUtils.rm_r dir
+end
 
-# -----------------------------------creating public directory under cache directory-------------------------------------------------------------
-mkdir -p $compile_cache_dir/public
-mv * $compile_cache_dir/public
-mv $compile_cache_dir/public .
-[[ -f public/Procfile ]] && mv public/Procfile .
+# Unbundle packages into build directory
+bundles = File.join(ENV['HOME'], 'vendor', 'bundles', '*')
+Dir[bundles].each do |bundle|
+    bundlename = File.basename(bundle)
+	if (not config[bundle] or config[bundle] != 'no')
+        puts "Unbundling #{bundlename}"
+        system('tar', 'xf', bundle) \
+            or abort "Failed to unbundle #{bundle}"
+    end
+end
 
-#jdk8
-if [ -d jdk1.8.0_25 ]; then
-  echo "-----> jdk1.8.0_25 folder found, moving along."
+bootscript = File.join(ENV['HOME'], 'bin', 'boot.rb')
+FileUtils.cp(bootscript, '.')
 
-else
-  echo -n "-----> jdk1.8.0_25 folder not found! "
-  if [[ -d "$compile_cache_dir/jdk1.8.0_25" ]]; then
-    echo -n "Copying jdk from cache to app... "
-    cp -r "$compile_cache_dir/jdk1.8.0_25" "$compile_build_dir"
-    echo "Done!"
-
-  else
-    echo -n "-----> Extracting (jdk1.8.0_25)....."
-    curl --max-time 180 --location "https://s3.amazonaws.com/covisintrnd.com-software/jdk-8u25-linux-x64.gz" | tar xz
-    cd "$compile_build_dir"
-    chmod -R uog+rx $compile_build_dir/jdk1.8.0_25
-    echo "Done!"
-    
-  fi
-fi
-#jdk8 - end 
-
-#httpd 2.2.29 - apache2
-if [ -d apache2 ]; then
-  echo "-----> apache2 folder found, moving along."
-
-else
-  echo -n "-----> apache2 folder not found! "
-  if [[ -d "$compile_cache_dir/apache2" ]]; then
-    echo -n "Copying apache2 from cache to app... "
-    cp -r "$compile_cache_dir/apache2" "$compile_build_dir"
-    echo "Done!"
-
-  else
-    echo -n "-----> Installing (httpd--apache2)....."
-    curl --max-time 180 --location "https://s3.amazonaws.com/covisintrnd.com-software/httpd-2.2.29.tar.gz" | tar xz
-    cd $compile_build_dir/httpd-2.2.29
-    apache2_build_dir=$compile_build_dir/apache2
-    #configure
-    ./configure --prefix=$apache2_build_dir \
-    --enable-mods-shared=all \
-    --enable-http \
-    --enable-deflate \
-    --enable-expires \
-    --enable-slotmem-shm \
-    --enable-headers \
-    --enable-rewrite \
-    --enable-proxy \
-    --enable-proxy-balancer \
-    --enable-proxy-http \
-    --enable-proxy-fcgi \
-    --enable-mime-magic \
-    --enable-log-debug \
-    --enable-so \
-    --with-expat=builtin \
-    --with-mpm=event \
-    --with-included-apr 
-
-    #compile the source
-    make
-    echo "apache has been compiled successfully..."
-
-    #install
-    make install
-    echo "apache has been installed successfully..."
-    chmod -R uog+rx $compile_build_dir/apache2
-    echo "Done!"
-
-    # installing tomcat-connector - mod_jk
-    cd $compile_build_dir
-    curl --max-time 180 --location "https://s3.amazonaws.com/covisintrnd.com-software/tomcat-connectors-1.2.40-src.tar.gz" | tar xz
-    cd tomcat-connectors-1.2.40-src/native/
-    ./configure --with-apxs=$compile_build_dir/apache2/bin/apxs \
-    && make \
-    && make install
-  
-  fi
-fi
-
-#apache - httpd - end
-
-cd $compile_build_dir
-
-
-#tomcat
-if [ -d apache-tomcat-7.0.57 ]; then
-  echo "-----> apache-tomcat-7.0.57 folder found, moving along."
-
-else
-  echo -n "-----> apache-tomcat-7.0.57 folder not found! "
-  if [[ -d "$compile_cache_dir/apache-tomcat-7.0.57" ]]; then
-    echo -n "Copying apache-tomcat-7.0.57 from cache to app... "
-    cp -r "$compile_cache_dir/apache-tomcat-7.0.57" "$compile_build_dir"
-    echo "Done!"
-
-  else
-    echo -n "-----> Extracting (apache-tomcat-7.0.57)....."
-    cd $compile_build_dir
-    curl --max-time 180 --location "https://s3.amazonaws.com/covisintrnd.com-software/apache-tomcat-7.0.57.tar.gz" | tar xz
-    chmod -R uog+rx $compile_build_dir/apache-tomcat-7.0.57
-    cd "$compile_build_dir"
-    echo "Done!"
-    
-  fi
-fi
-#tomcat - end
-
-export JAVA_HOME="$compile_build_dir/jdk1.8.0_25"
-export PATH="$JAVA_HOME/bin:$PATH"
-
-
-cd $compile_build_dir
-
-#copying config file from buildpack to apache2 directory also to public directory
-cp -f $compile_buildpack_dir/conf/httpd.conf  apache2/conf/httpd.conf
-cp -f $compile_buildpack_dir/conf/httpd-vhosts.conf  apache2/conf/extra/httpd-vhosts.conf
-cp -f $compile_buildpack_dir/conf/jk.conf  apache2/conf/extra
-cp -R $compile_buildpack_dir/logs apache2
-
-cp -f $compile_build_dir/public/libct_apache22_agent-4.8.0.46-x64.so apache2/modules
-cp -f $compile_buildpack_dir/conf/workers.properties  apache2/conf
-# -------------------------------libct_apache22 ---------------------------------------
-cd $compile_build_dir/apache2/modules
-chmod uog+rx libct_apache22_agent-4.8.0.46-x64.so
-cd $compile_build_dir
-# -------------------------------copying build pack tomcat end-----------------------------------------------------------------
-cp $compile_buildpack_bin/boot.sh .
-# -------------------------------copying webagent conf -----------------------------------------------------------------
-#cp $compile_buildpack_dir/conf/webagent.conf .
-mkdir -p $compile_build_dir/conf 
-cp $compile_buildpack_dir/conf/webagent.conf $compile_build_dir/conf
-#logging properties which having without ConsoleHandler
-cp -f $compile_buildpack_dir/conf/logging.properties $compile_build_dir/apache-tomcat-7.0.57/conf/logging.properties
-#copying server.xml from buildpack to tomcat conf directory 
-cp -f $compile_buildpack_dir/conf/server.xml  $compile_build_dir/apache-tomcat-7.0.57/conf/server.xml
-
-cd $compile_build_dir
-
-rm -rf "$compile_cache_dir/jdk1.8.0_25"
-cp -r jdk1.8.0_25 "$compile_cache_dir/jdk1.8.0_25"
-
-rm -rf "$compile_cache_dir/apache2"
-cp -r apache2 "$compile_cache_dir/apache2"
-
-rm -rf "$compile_cache_dir/apache-tomcat-7.0.57"
-cp -r apache-tomcat-7.0.57 "$compile_cache_dir/apache-tomcat-7.0.57"
-
-# Deploy all war files
-WEBAPPDIR=$compile_build_dir/apache-tomcat-7.0.57/webapps
-cd $compile_build_dir/public
-for WAR in *.war; do
-[ -r "$WAR" ] || continue
-echo "Deploying $WAR"
-mv "$WAR" "$WEBAPPDIR"
-done
-
-for ZIP in *.zip; do
-[ -r "$ZIP" ] || continue
-echo "Extracting $ZIP"
-unzip "$ZIP" 
-    for WAR in *.war; do
-        [ -r "$WAR" ] || continue
-        echo "Deploying $WAR"  
-        mv "$WAR" "$WEBAPPDIR"
-    done
-done
+# vim: set tabstop=4 shiftwidth=4 expandtab :
