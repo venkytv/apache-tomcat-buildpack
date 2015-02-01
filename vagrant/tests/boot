@@ -1,4 +1,4 @@
 #!/bin/bash
 $( dirname $0 )/shutdown
-cd /vagrant
+cd /app
 HOME="$PWD" VCAP_APP_PORT=12345 VCAP_APP_HOST=localhost ruby /app/boot.rb

@@ -1,5 +1,18 @@
 #!/bin/bash
+
 $( dirname $0 )/shutdown
-cd /vagrant
-mkdir -p /tmp/staging /tmp/cache
-HOME="$PWD" ruby bin/compile /tmp/staging /tmp/cache
+
+set -e
+
+HOME=/vagrant/samples
+BUILDDIR=/tmp/staged/app
+CACHEDIR=/tmp/cache
+BUILDPACKDIR=/vagrant
+
+mkdir -p ${BUILDDIR} ${CACHEDIR}
+rsync -aq ${HOME}/ ${BUILDDIR}
+
+ruby ${BUILDPACKDIR}/bin/compile ${BUILDDIR} ${CACHEDIR}
+
+rm -rf /app/*
+rsync -aq ${BUILDDIR}/ /app

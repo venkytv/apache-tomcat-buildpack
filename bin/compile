@@ -92,13 +92,16 @@ config['bundles'].each do |bundlename, bundle|
     Dir.chdir ORIGDIR
 end
 
-Dir.chdir(BUILDDIR)
 [ File.join(BUILDPACKDIR, 'bin', 'boot.rb'), configfile ].each do |infile|
-    outfile = File.basename(infile)
+    outfile = File.join(BUILDDIR, File.basename(infile))
     unless (File.identical?(infile, outfile))
-        puts "Copying in file #{infile}"
+        puts "Copying over file #{infile}"
         FileUtils.copy(infile, outfile)
     end
 end
+
+puts "Copying over templates"
+templates = File.join(BUILDPACKDIR, 'templates')
+FileUtils.cp_r(templates, BUILDDIR)
 
 # vim: set tabstop=4 shiftwidth=4 expandtab :
