@@ -17,7 +17,7 @@ Dir.chdir(BUILDDIR)
 
 # Clear out the build directory
 Dir['*'].each do |dir|
-    puts "Removing directory: #{BUILDDIR}/#{dir}"
+    puts "Removing #{BUILDDIR}/#{dir}"
     FileUtils.rm_r dir
 end
 
@@ -32,7 +32,8 @@ Dir[bundles].each do |bundle|
     end
 end
 
-bootscript = File.join(ENV['HOME'], 'bin', 'boot.rb')
-FileUtils.cp(bootscript, '.')
+[ File.join('bin', 'boot.rb'), 'config.yml' ].each do |file|
+    FileUtils.copy(File.join(ENV['HOME'], file), '.')
+end
 
 # vim: set tabstop=4 shiftwidth=4 expandtab :
