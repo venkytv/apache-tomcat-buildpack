@@ -4,6 +4,7 @@ BUILDDIR='/app'
 APACHE_BUILDDIR="${BUILDDIR}/apache"
 JRE_BUILDDIR="${BUILDDIR}/jre"
 TOMCAT_BUILDDIR="${BUILDDIR}/tomcat"
+WEBSOCKETD_BUILDDIR="${BUILDDIR}/websocketd"
 BASEDIR='/vagrant'
 BUNDLEDIR="${BASEDIR}/vendor/bundles"
 
@@ -98,10 +99,19 @@ mv $( ls ) "$JRE_BUILDDIR"
 cd "$SRCDIR"
 rmdir "$EXTRACTDIR"
 
+# Download and set up websocketd
+rm -rf "${WEBSOCKETD_BUILDDIR}"
+cd "$SRCDIR"
+download "https://github.com/joewalnes/websocketd/releases/download/v${WEBSOCKETD_VERSION}/websocketd-${WEBSOCKETD_VERSION}-linux_amd64.zip" \
+	"$WEBSOCKETD_MD5SUM"
+unzip "websocketd-${WEBSOCKETD_VERSION}-linux_amd64.zip" websocketd
+mkdir "${WEBSOCKETD_BUILDDIR}"
+mv websocketd "$WEBSOCKETD_BUILDDIR"
+
 # Bundle packages
 rm -rf "$BUNDLEDIR" && mkdir -p "$BUNDLEDIR"
 cd "$BUILDDIR"
-for BUNDLE in apache jre tomcat; do
+for BUNDLE in apache jre tomcat websocketd; do
 	tar jcf "${BUNDLEDIR}/${BUNDLE}.tar.bz2" "$BUNDLE"
 done
 

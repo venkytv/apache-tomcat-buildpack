@@ -9,4 +9,9 @@ if pgrep -f 'org.apache.catalina.startup.Bootstrap start' >/dev/null 2>&1; then
     JRE_HOME=/app/jre /app/tomcat/bin/shutdown.sh
 fi
 
+if pgrep -f /app/websocketd/websocketd >/dev/null 2>&1; then
+    echo "Stopping websocketd"
+    pkill -f /app/websocketd/websocketd
+fi
+
 pkill tail

@@ -9,6 +9,7 @@ BUILDDIR=/tmp/staged/app
 CACHEDIR=/tmp/cache
 BUILDPACKDIR=/vagrant
 
+rm -rf ${BUILDDIR}
 mkdir -p ${BUILDDIR} ${CACHEDIR}
 rsync -aq ${HOME}/ ${BUILDDIR}
 
