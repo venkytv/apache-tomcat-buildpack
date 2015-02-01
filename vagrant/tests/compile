@@ -4,7 +4,7 @@ $( dirname $0 )/shutdown
 
 set -e
 
-HOME=/vagrant/samples
+HOME=/vagrant/push
 BUILDDIR=/tmp/staged/app
 CACHEDIR=/tmp/cache
 BUILDPACKDIR=/vagrant

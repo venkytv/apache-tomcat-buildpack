@@ -1,0 +1,4 @@
+---
+applications:
+- name: foo
+  buildpack: https://github.com/venkytv/apache-tomcat-buildpack.git#tweaks
