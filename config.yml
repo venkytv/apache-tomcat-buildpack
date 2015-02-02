@@ -18,5 +18,5 @@ bundles:
     location: 'https://www.dropbox.com/s/03cnbn1lqb8bjlz/websocketd.tar.bz2?dl=1'
 options:
   enable_websocketd: no
-  enable_mod_jk: no
+  enable_mod_jk: yes
   cache_binaries: no

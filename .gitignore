@@ -1,4 +1,4 @@
 /.vagrant
 /vendor
-/*.war
-/*.zip
+/push/*.war
+/push/*.zip

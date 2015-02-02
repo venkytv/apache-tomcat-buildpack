@@ -43,6 +43,7 @@ download "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${PCRE_VERS
 rm -rf "${APACHE_BUILDDIR}"
 
 # Build and install PCRE
+banner PCRE
 cd "$SRCDIR"
 tar xf "pcre-${PCRE_VERSION}.tar.bz2"
 cd "pcre-${PCRE_VERSION}"
@@ -52,6 +53,7 @@ cd "pcre-${PCRE_VERSION}"
 [[ $? -ne 0 ]] && exit 2
 
 # Build and install apache
+banner Apache
 cd "$SRCDIR"
 for OUTDIR in "httpd-${APACHE_VERSION}" "apr-${APR_VERSION}" "apr-util-${APRUTIL_VERSION}"; do
 	[[ -e "$OUTDIR" ]] && rm -rf "$OUTDIR"
@@ -71,7 +73,20 @@ cd "httpd-${APACHE_VERSION}" \
 rm -rf "${APACHE_BUILDDIR}/man"
 rm -rf "${APACHE_BUILDDIR}/manual"
 
+# Build and install mod_jk
+banner mod_jk
+cd "$SRCDIR"
+download "http://www.apache.org/dist/tomcat/tomcat-connectors/jk/tomcat-connectors-${MODJK_VERSION}-src.tar.gz" \
+	"$MODJK_MD5SUM"
+tar xf "tomcat-connectors-${MODJK_VERSION}-src.tar.gz"
+cd "tomcat-connectors-${MODJK_VERSION}-src/native"
+./configure --prefix="$APACHE_BUILDDIR" --with-apxs \
+	&& make \
+	&& make install
+[[ $? -ne 0 ]] && exit 2
+
 # Download and install tomcat
+banner Tomcat
 rm -rf "${TOMCAT_BUILDDIR}"
 cd "$SRCDIR"
 TOMCAT_MAJOR_VERSION="${TOMCAT_VERSION%%.*}"
@@ -81,6 +96,7 @@ tar xf "apache-tomcat-${TOMCAT_VERSION}.tar.gz"
 mv "apache-tomcat-${TOMCAT_VERSION}" ${TOMCAT_BUILDDIR}
 
 # Download and install Oracle JRE
+banner JRE
 rm -rf "${JRE_BUILDDIR}"
 cd "$SRCDIR"
 JRE_MAJOR_VERSION=${JRE_VERSION%%-*}
@@ -100,6 +116,7 @@ cd "$SRCDIR"
 rmdir "$EXTRACTDIR"
 
 # Download and set up websocketd
+banner Websocketd
 rm -rf "${WEBSOCKETD_BUILDDIR}"
 cd "$SRCDIR"
 download "https://github.com/joewalnes/websocketd/releases/download/v${WEBSOCKETD_VERSION}/websocketd-${WEBSOCKETD_VERSION}-linux_amd64.zip" \
@@ -109,6 +126,7 @@ mkdir "${WEBSOCKETD_BUILDDIR}"
 mv websocketd "$WEBSOCKETD_BUILDDIR"
 
 # Bundle packages
+banner Bundling
 rm -rf "$BUNDLEDIR" && mkdir -p "$BUNDLEDIR"
 cd "$BUILDDIR"
 for BUNDLE in apache jre tomcat websocketd; do
