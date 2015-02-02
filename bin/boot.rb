@@ -11,6 +11,22 @@ ORIGDIR = Dir.getwd
 configfile = File.join(ENV['HOME'], 'config.yml')
 config = YAML.load(File.read(configfile))
 
+# Extend Hash to support deep merging of two hashes.  The default "merge"
+# routine only merges the top level keys.
+class ::Hash
+    def deep_merge(second)
+        merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+        self.merge(second, &merger)
+    end
+end
+
+# Load config_override.yml if available
+override_configfile = File.join(ENV['HOME'], 'config_override.yml')
+if (File.exists?(override_configfile))
+    override_config = YAML.load(File.read(override_configfile))
+    config = config.deep_merge(override_config)
+end
+
 # If Apache is not present, have Tomcat listen on the default port
 tomcat_port = (config['bundles'].has_key?('apache') ?  8080 : ENV['VCAP_APP_PORT'])
 

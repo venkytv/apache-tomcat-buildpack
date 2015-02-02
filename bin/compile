@@ -20,21 +20,29 @@ Buildpack dir: #{BUILDPACKDIR}
 Temp dir: #{TMPDIR}
 =========="
 
-# Look for config override in cf pushed dir
-# and fall back to default in buildpack if not found
-configfilename = 'config.yml'
-configfile = nil
-[ BUILDDIR, BUILDPACKDIR ].each do |dir|
-    c = File.join(dir, configfilename)
-    if (File.exists?(c))
-        configfile = c
-        break
-    end
-end
-abort "Config file not found: #{configfilename}" unless configfile
-
+# Load config from buildpack
+configfile = File.join(BUILDPACKDIR, 'config.yml')
+abort "Config file not found: #{configfile}" unless configfile
 puts "Loading config file: #{configfile}"
 config = YAML.load(File.read(configfile))
+
+# Extend Hash to support deep merging of two hashes.  The default "merge"
+# routine only merges the top level keys.
+class ::Hash
+    def deep_merge(second)
+        merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+        self.merge(second, &merger)
+    end
+end
+
+# Load config_override.yml from cf pushed directory, if available
+override_configfile = File.join(BUILDDIR, 'config_override.yml')
+if (File.exists?(override_configfile))
+    override_config = YAML.load(File.read(override_configfile))
+    config = config.deep_merge(override_config)
+else
+    override_configfile = nil
+end
 
 # Load checksums
 puts "Loading checksums"
@@ -97,6 +105,14 @@ end
     unless (File.identical?(infile, outfile))
         puts "Copying over file #{infile}"
         FileUtils.copy(infile, outfile)
+    end
+end
+
+if (override_configfile)
+    outfile = File.join(BUILDDIR, File.basename(override_configfile))
+    unless (File.identical?(override_configfile, outfile))
+        puts "Copying over file #{override_configfile}"
+        FileUtils.copy(override_configfile, outfile)
     end
 end
 
